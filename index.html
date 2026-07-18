@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DomainPilot — Find the perfect domain name</title>
+<meta name="description" content="AI-powered domain name generator for founders, creators, and agencies. Instant availability, brand scores, and pronunciation insights." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08070c;
+    --bg-soft:#0d0c14;
+    --card:#12111a;
+    --border:rgba(255,255,255,0.08);
+    --border-strong:rgba(255,255,255,0.16);
+    --text:#f4f3f8;
+    --muted:#9c99ad;
+    --violet:#a78bfa;
+    --blue:#7dd3fc;
+    --grad: linear-gradient(90deg,#a78bfa,#7dd3fc);
+    --emerald:#34d399;
+    --rose:#fb7185;
+    --amber:#fbbf24;
+    --radius:16px;
+    --radius-lg:20px;
+    --radius-full:999px;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    line-height:1.5;
+  }
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit; text-decoration:none;}
+  button{font:inherit; color:inherit; cursor:pointer;}
+  ul{list-style:none;}
+  input,textarea{font:inherit; color:inherit;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  .serif-italic{font-family:'Instrument Serif', serif; font-style:italic; font-weight:400;}
+  .grad-text{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .eyebrow{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--violet); margin-bottom:16px; font-weight:600;}
+  .section{position:relative; padding:112px 0;}
+  .section-head{max-width:640px; margin:0 auto; text-align:center;}
+  .h2{font-size:44px; font-weight:800; letter-spacing:-0.02em; line-height:1.1;}
+  @media (min-width:640px){ .h2{font-size:52px;} }
+
+  .glass{
+    background: rgba(255,255,255,0.035);
+    border:1px solid var(--border);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border-radius:var(--radius-full); padding:14px 26px; font-size:15px; font-weight:700;
+    border:1px solid transparent; transition:.15s ease; white-space:nowrap;
+  }
+  .btn-grad{background:var(--grad); color:#0a0a12;}
+  .btn-grad:hover{filter:brightness(1.08); transform:translateY(-1px);}
+  .btn-ghost{background:rgba(255,255,255,0.03); border-color:var(--border); font-weight:600;}
+  .btn-ghost:hover{background:rgba(255,255,255,0.07);}
+  .btn-small{padding:8px 16px; font-size:13px; border-radius:var(--radius-full);}
+  .btn-full{width:100%;}
+
+  .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); transition:border-color .2s;}
+  .card:hover{border-color:var(--border-strong);}
+
+  .field{
+    width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text);
+    border-radius:12px; padding:13px 16px; font-size:14px;
+  }
+  .field::placeholder{color:#6b6880;}
+  .field:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(167,139,250,0.15);}
+  .label{display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; font-weight:600;}
+
+  .chip{
+    border:1px solid var(--border); background:rgba(255,255,255,0.02); color:var(--muted);
+    border-radius:var(--radius-full); padding:9px 18px; font-size:14px; transition:.15s;
+  }
+  .chip.active, .chip:hover{color:var(--text); border-color:rgba(167,139,250,0.6); background:rgba(167,139,250,0.12);}
+
+  /* ===== nav ===== */
+  .nav{position:fixed; top:0; left:0; right:0; z-index:50; padding-top:16px;}
+  .nav-inner{
+    max-width:var(--maxw); margin:0 auto; padding:12px 20px; border-radius:18px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{display:flex; align-items:center; gap:8px; font-weight:800; font-size:18px;}
+  .logo-badge{width:32px; height:32px; border-radius:10px; background:var(--grad); color:#0a0a12; display:flex; align-items:center; justify-content:center; font-size:15px;}
+  .nav-links{display:none; align-items:center; gap:32px; font-size:14px; color:var(--muted);}
+  .nav-links a:hover{color:#fff;}
+  .nav-actions{display:none; align-items:center; gap:14px; font-size:14px;}
+  .nav-actions .signin{color:var(--muted);}
+  .nav-actions .signin:hover{color:#fff;}
+  .menu-btn{
+    width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  }
+  .mobile-menu{
+    display:none; flex-direction:column; gap:16px; margin-top:8px; border-radius:18px; padding:20px;
+    font-size:14px; color:var(--muted);
+  }
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a:hover{color:#fff;}
+  @media (min-width:860px){
+    .nav-links, .nav-actions{display:flex;}
+    .menu-btn{display:none;}
+  }
+
+  /* ===== hero ===== */
+  .hero{padding:168px 0 96px; overflow:hidden;}
+  .aurora{position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
+  .blob{position:absolute; border-radius:50%; filter:blur(90px); opacity:.35; animation: drift 22s ease-in-out infinite;}
+  .blob-1{width:520px;height:520px; background:#7c3aed; top:-160px; left:-120px;}
+  .blob-2{width:460px;height:460px; background:#0ea5e9; top:60px; right:-140px; animation-delay:-8s;}
+  .blob-3{width:380px;height:380px; background:#f472b6; bottom:-160px; left:35%; opacity:.18; animation-delay:-14s;}
+  @keyframes drift{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,-30px) scale(1.08);} }
+  .grid-overlay{
+    position:absolute; inset:0;
+    background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 90%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 90%);
+  }
+  .dot{position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.35); animation: float 6s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)}}
+
+  .hero-grid{position:relative; z-index:1; display:grid; gap:56px; align-items:center;}
+  @media (min-width:960px){ .hero-grid{grid-template-columns:1fr 1fr;} }
+  .badge-pill{
+    display:inline-flex; align-items:center; gap:8px; border-radius:var(--radius-full); padding:8px 16px;
+    font-size:12px; color:var(--muted); margin-bottom:28px;
+  }
+  .badge-pill .dotsep{color:rgba(255,255,255,0.2);}
+  .h1{font-size:44px; font-weight:800; line-height:1.08; letter-spacing:-0.02em;}
+  @media (min-width:640px){ .h1{font-size:58px;} }
+  @media (min-width:1100px){ .h1{font-size:64px;} }
+  .h1 .serif-italic{font-size:1.02em;}
+  .hero-sub{margin-top:22px; font-size:18px; color:var(--muted); max-width:520px;}
+  .hero-cta{margin-top:30px; display:flex; flex-wrap:wrap; align-items:center; gap:14px;}
+  .hero-meta{margin-top:28px; display:flex; flex-wrap:wrap; gap:20px; font-size:12px; color:var(--muted);}
+  .hero-meta span{display:flex; align-items:center; gap:6px;}
+
+  .mock{border-radius:var(--radius-lg); overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45);}
+  .mock-bar{display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border);}
+  .mock-dot{width:10px; height:10px; border-radius:50%;}
+  .mock-body{padding:24px;}
+  .mock-label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);}
+  .mock-value{font-weight:700; font-size:18px; margin-top:2px;}
+  .mock-generating{margin-top:12px; font-size:14px; color:var(--violet); display:flex; align-items:center; gap:8px;}
+  .mock-results{margin-top:20px; display:flex; flex-direction:column; gap:12px;}
+  .mock-row{
+    display:flex; align-items:center; justify-content:space-between; border-radius:12px; padding:12px 16px;
+    background:rgba(255,255,255,0.03); border:1px solid var(--border); opacity:0; transition:opacity .5s;
+  }
+  .mock-row.in{opacity:1;}
+  .tag-ok{font-size:12px; font-weight:700; color:var(--emerald); display:flex; align-items:center; gap:4px;}
+  .tag-no{font-size:12px; font-weight:700; color:var(--rose); display:flex; align-items:center; gap:4px;}
+
+  .spin{animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ===== marquee ===== */
+  .marquee{position:relative; padding:40px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-soft); overflow:hidden;}
+  .marquee p{text-align:center; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:24px;}
+  .marquee-track{display:flex; width:max-content; animation:scroll-x 28s linear infinite; gap:64px;}
+  .marquee-set{display:flex; gap:64px; font-size:24px; font-weight:600; letter-spacing:.02em; color:rgba(255,255,255,0.25);}
+  @keyframes scroll-x{from{transform:translateX(0)} to{transform:translateX(calc(-100% - 64px))}}
+
+  /* ===== steps ===== */
+  .steps-grid{margin-top:64px; display:grid; gap:24px;}
+  @media (min-width:760px){ .steps-grid{grid-template-columns:repeat(3,1fr);} }
+  .step{padding:32px;}
+  .step-badge{display:inline-block; font-size:12px; font-weight:700; padding:5px 14px; border-radius:var(--radius-full); background:var(--grad); color:#0a0a12; margin-bottom:24px;}
+  .step-icon{width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:20px;}
+  .step h3{font-size:20px; font-weight:700; margin-bottom:8px;}
+  .step p{color:var(--muted); font-size:14px; line-height:1.6;}
+
+  /* ===== generator ===== */
+  .gen-sub{margin-top:16px; color:var(--muted);}
+  .gen-form{max-width:820px; margin:56px auto 0; padding:32px;}
+  .gen-grid{display:grid; gap:24px;}
+  @media (min-width:640px){ .gen-grid{grid-template-columns:1fr 1fr;} }
+  .field-block{margin-top:24px;}
+  .field-block:first-child{margin-top:0;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .gen-submit{margin-top:32px;}
+  #resultsWrap{max-width:820px; margin:32px auto 0;}
+  .results-grid{display:grid; gap:20px;}
+  @media (min-width:640px){ .results-grid{grid-template-columns:1fr 1fr;} }
+  .result-card{padding:24px;}
+  .result-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .result-head h4{font-size:20px; font-weight:700;}
+  .badge-ok{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--emerald); background:rgba(52,211,153,0.1); padding:5px 12px; border-radius:var(--radius-full);}
+  .badge-no{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--rose); background:rgba(251,113,133,0.1); padding:5px 12px; border-radius:var(--radius-full);}
+  .score-row{margin-top:16px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; text-align:center;}
+  .score-num{font-size:18px; font-weight:700;}
+  .score-lbl{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:2px;}
+  .result-actions{margin-top:20px; display:flex; flex-wrap:wrap; gap:8px;}
+
+  /* ===== demo ===== */
+  .video-frame{
+    position:relative; max-width:960px; margin:56px auto 0; aspect-ratio:16/9; border-radius:24px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    background:radial-gradient(ellipse at 30% 20%, rgba(124,58,237,0.15), transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.15), transparent 60%), var(--card);
+    border:1px solid var(--border);
+  }
+  .play-btn{
+    width:80px; height:80px; border-radius:50%; background:var(--grad); color:#0a0a12; border:none;
+    display:flex; align-items:center; justify-content:center; font-size:24px; transition:transform .2s;
+  }
+  .video-frame:hover .play-btn{transform:scale(1.1);}
+  .video-caption{
+    position:absolute; left:0; right:0; bottom:0; padding:24px; display:flex; align-items:center; justify-content:space-between;
+    font-size:12px; color:var(--muted); background:linear-gradient(to top, rgba(0,0,0,0.55), transparent); gap:12px; flex-wrap:wrap;
+  }
+  .video-caption .vtitle{color:#fff; font-weight:600; font-size:14px; margin-top:2px;}
+
+  .stats{max-width:900px; margin:64px auto 0; padding:40px; display:grid; grid-template-columns:repeat(2,1fr); gap:32px; text-align:center;}
+  @media (min-width:640px){ .stats{grid-template-columns:repeat(4,1fr);} }
+  .stat-num{font-size:36px; font-weight:800;}
+  .stat-lbl{margin-top:4px; font-size:14px; color:var(--muted);}
+
+  /* ===== testimonials ===== */
+  .testi-grid{margin-top:56px; display:grid; gap:24px;}
+  @media (min-width:860px){ .testi-grid{grid-template-columns:repeat(3,1fr);} }
+  .testi{padding:28px;}
+  .stars{color:var(--amber); margin-bottom:16px; letter-spacing:2px;}
+  .testi p.quote{font-size:15px; line-height:1.6;}
+  .testi-person{margin-top:24px; display:flex; align-items:center; gap:12px;}
+  .avatar{width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;}
+  .testi-name{font-size:14px; font-weight:600;}
+  .testi-role{font-size:12px; color:var(--muted);}
+
+  /* ===== pricing ===== */
+  .pricing-grid{margin-top:56px; display:grid; gap:24px; align-items:start;}
+  @media (min-width:860px){ .pricing-grid{grid-template-columns:repeat(3,1fr);} }
+  .plan{padding:32px; position:relative;}
+  .plan.popular{border-color:rgba(167,139,250,0.4); box-shadow:0 0 0 1px rgba(167,139,250,0.4);}
+  .popular-badge{
+    position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:var(--grad); color:#0a0a12;
+    font-size:12px; font-weight:700; padding:5px 14px; border-radius:var(--radius-full);
+  }
+  .plan-tier{font-size:14px; color:var(--muted);}
+  .plan-price{margin-top:8px; font-size:36px; font-weight:800;}
+  .plan-price span{font-size:15px; font-weight:500; color:var(--muted);}
+  .plan-feats{margin-top:24px; display:flex; flex-direction:column; gap:12px; font-size:14px; color:var(--muted);}
+  .plan-feats li{display:flex; gap:8px;}
+  .plan-feats .check{color:var(--emerald);}
+  .plan .btn{margin-top:32px; width:100%;}
+
+  /* ===== faq ===== */
+  .faq-list{max-width:720px; margin:56px auto 0; display:flex; flex-direction:column; gap:14px;}
+  .faq-item{overflow:hidden;}
+  .faq-q{width:100%; display:flex; align-items:center; justify-content:space-between; padding:20px 24px; text-align:left; font-weight:600; background:transparent; border:none;}
+  .faq-icon{transition:transform .2s; color:var(--muted);}
+  .faq-a{padding:0 24px 20px; font-size:14px; color:var(--muted); line-height:1.6; display:none;}
+  .faq-a.open{display:block;}
+
+  /* ===== contact ===== */
+  .contact-form{max-width:640px; margin:48px auto 0; padding:32px;}
+  .contact-success{display:none; margin-top:16px; font-size:14px; color:var(--emerald); text-align:center;}
+  .contact-success.show{display:block;}
+
+  /* ===== footer ===== */
+  footer{border-top:1px solid var(--border); background:var(--bg-soft); padding:64px 0;}
+  .footer-grid{display:grid; gap:48px;}
+  @media (min-width:760px){ .footer-grid{grid-template-columns:1.4fr 1fr 1fr;} }
+  .footer-desc{margin-top:16px; font-size:14px; color:var(--muted); max-width:280px;}
+  .newsletter{margin-top:24px; display:flex; gap:8px;}
+  .newsletter input{border-radius:var(--radius-full); flex:1; min-width:0;}
+  .newsletter button{border-radius:var(--radius-full); flex-shrink:0; padding:11px 20px; font-size:14px;}
+  .fcol-title{font-weight:700; margin-bottom:16px;}
+  .fcol ul{display:flex; flex-direction:column; gap:12px; font-size:14px; color:var(--muted);}
+  .fcol ul a:hover{color:#fff;}
+  .fsocial{display:flex; gap:16px; margin-top:20px; color:var(--muted); font-size:13px;}
+  .fsocial a:hover{color:#fff;}
+  .footer-bottom{
+    max-width:var(--maxw); margin:48px auto 0; padding:24px 24px 0; border-top:1px solid var(--border);
+    display:flex; flex-direction:column; gap:8px; font-size:12px; color:var(--muted);
+  }
+  @media (min-width:640px){ .footer-bottom{flex-direction:row; justify-content:space-between;} }
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  ::selection{background:rgba(167,139,250,0.35); color:#fff;}
+  .skip-link{position:fixed; top:8px; left:8px; transform:translateY(-80px); background:#fff; color:#000; padding:10px 16px; border-radius:8px; font-size:14px; z-index:200; transition:transform .2s;}
+  .skip-link:focus{transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <div class="wrap">
+    <div class="nav-inner glass">
+      <a href="#" class="logo">
+        <span class="logo-badge">✧</span>
+        DomainPilot
+      </a>
+      <nav class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="#generator">Generator</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="#" class="signin">Sign in</a>
+        <a href="#generator" class="btn btn-grad btn-small">Try free →</a>
+      </div>
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+    <div id="mobileMenu" class="mobile-menu glass">
+      <a href="#how">How it works</a>
+      <a href="#generator">Generator</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="#generator" class="btn btn-grad" style="justify-content:center;">Try free</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="aurora">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="grid-overlay"></div>
+    <div class="dot" style="top:12%; left:18%;"></div>
+    <div class="dot" style="top:24%; left:55%; animation-delay:1.2s;"></div>
+    <div class="dot" style="top:8%; left:78%; animation-delay:2.1s;"></div>
+    <div class="dot" style="top:48%; left:6%; animation-delay:.6s;"></div>
+    <div class="dot" style="top:60%; left:92%; animation-delay:1.8s;"></div>
+  </div>
+
+  <div class="wrap hero-grid">
+    <div>
+      <div class="badge-pill glass reveal">
+        <span style="color:var(--violet)">✧</span> Powered by frontier AI <span class="dotsep">·</span> New: brand scoring
+      </div>
+      <h1 class="h1 reveal" style="transition-delay:.05s">
+        Find the perfect <span class="serif-italic grad-text">domain name</span> before someone else does.
+      </h1>
+      <p class="hero-sub reveal" style="transition-delay:.1s">
+        Stop wasting hours on domains that are already taken. DomainPilot's AI generates unique, memorable, and brandable ideas tailored to your business — with instant availability, brand scores, and pronunciation insights.
+      </p>
+      <div class="hero-cta reveal" style="transition-delay:.15s">
+        <a href="#generator" class="btn btn-grad"><span>✧</span> Generate domains</a>
+        <a href="#demo" class="btn btn-ghost"><span>▶</span> Watch demo</a>
+      </div>
+      <div class="hero-meta reveal" style="transition-delay:.2s">
+        <span>🛡️ No credit card</span>
+        <span>⚡ Results in ~4s</span>
+        <span>🌐 150+ TLDs</span>
+      </div>
+    </div>
+
+    <div class="reveal" style="transition-delay:.1s">
+      <div class="mock card">
+        <div class="mock-bar">
+          <span class="mock-dot" style="background:#ff5f57;"></span>
+          <span class="mock-dot" style="background:#febc2e;"></span>
+          <span class="mock-dot" style="background:#28c840;"></span>
+          <span style="margin-left:8px; font-size:12px; color:var(--muted);">domainpilot.app / generate</span>
+        </div>
+        <div class="mock-body">
+          <p class="mock-label">Business</p>
+          <p class="mock-value">AI Marketing Agency</p>
+          <p id="heroGenerating" class="mock-generating">
+            <svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="9" opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9"/></svg>
+            Generating brandable names…
+          </p>
+          <div id="heroResults" class="mock-results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<section class="marquee">
+  <p>Trusted by founders shipping the next thing</p>
+  <div class="marquee-track">
+    <div class="marquee-set">
+      <span>OCTAVIA</span><span>PARALLEL</span><span>STRIDE</span><span>HELIOS</span><span>ATLAS</span><span>ACME</span><span>NORTHWIND</span><span>LUMEN</span>
+    </div>
+    <div class="marquee-set" aria-hidden="true">
+      <span>OCTAVIA</span><span>PARALLEL</span><span>STRIDE</span><span>HELIOS</span><span>ATLAS</span><span>ACME</span><span>NORTHWIND</span><span>LUMEN</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section id="how" class="section">
+  <div class="wrap">
+    <div class="section-head reveal" style="max-width:640px;">
+      <p class="eyebrow">How it works</p>
+      <h2 class="h2">From blank page to <span class="serif-italic grad-text">brandable</span> in seconds</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step card reveal">
+        <span class="step-badge">Step 1</span>
+        <div class="step-icon">🧠</div>
+        <h3>Tell us your brand</h3>
+        <p>Business name, industry, keywords, preferred extension. Takes 20 seconds.</p>
+      </div>
+      <div class="step card reveal" style="transition-delay:.08s">
+        <span class="step-badge">Step 2</span>
+        <div class="step-icon">⚡</div>
+        <h3>AI analyzes context</h3>
+        <p>Industry, audience, brand personality, phonetics, and available inventory.</p>
+      </div>
+      <div class="step card reveal" style="transition-delay:.16s">
+        <span class="step-badge">Step 3</span>
+        <div class="step-icon">🚀</div>
+        <h3>Get 100+ ideas</h3>
+        <p>Availability, brand score, meaning, pronunciation, memorability — instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GENERATOR ================= -->
+<section id="generator" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Generator</p>
+      <h2 class="h2">Try it — <span class="serif-italic grad-text">generate names</span> now</h2>
+      <p class="gen-sub">No signup. Real-feel AI. Results in seconds.</p>
+    </div>
+
+    <form id="genForm" class="gen-form card reveal">
+      <div class="gen-grid">
+        <div>
+          <label for="bizName" class="label">Business name</label>
+          <input id="bizName" type="text" class="field" placeholder="Nova Labs" />
+        </div>
+        <div>
+          <label for="industry" class="label">Industry</label>
+          <input id="industry" type="text" class="field" placeholder="AI Marketing Agency" />
+        </div>
+        <div>
+          <label for="audience" class="label">Target audience</label>
+          <input id="audience" type="text" class="field" placeholder="Startup founders" />
+        </div>
+        <div>
+          <label for="keywords" class="label">Keywords</label>
+          <input id="keywords" type="text" class="field" placeholder="fast, bold, spark" />
+        </div>
+      </div>
+
+      <div class="field-block">
+        <p class="label">Brand style</p>
+        <div class="chip-row" id="styleGroup" role="group" aria-label="Brand style">
+          <button type="button" class="chip">Minimal</button>
+          <button type="button" class="chip">Luxury</button>
+          <button type="button" class="chip">Tech</button>
+          <button type="button" class="chip">Creative</button>
+          <button type="button" class="chip active">Modern</button>
+          <button type="button" class="chip">Startup</button>
+          <button type="button" class="chip">Playful</button>
+          <button type="button" class="chip">Elegant</button>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <p class="label">Extensions</p>
+        <div class="chip-row" id="extGroup" role="group" aria-label="Domain extensions">
+          <button type="button" class="chip active">.com</button>
+          <button type="button" class="chip active">.ai</button>
+          <button type="button" class="chip active">.io</button>
+          <button type="button" class="chip">.co</button>
+          <button type="button" class="chip">.store</button>
+          <button type="button" class="chip">.xyz</button>
+          <button type="button" class="chip">.online</button>
+        </div>
+      </div>
+
+      <button type="submit" id="genBtn" class="btn btn-grad gen-submit"><span>✧</span> Generate domains</button>
+    </form>
+
+    <div id="resultsWrap"></div>
+  </div>
+</section>
+
+<!-- ================= DEMO ================= -->
+<section id="demo" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Product demo</p>
+      <h2 class="h2">See DomainPilot <span class="serif-italic grad-text">in action</span></h2>
+      <p class="gen-sub">Watch how AI generates memorable domain names in seconds.</p>
+    </div>
+
+    <div class="video-frame reveal">
+      <button class="play-btn" aria-label="Play demo video">▶</button>
+      <div class="video-caption">
+        <div>
+          <p style="text-transform:uppercase; letter-spacing:.08em;">Demo · 1:24</p>
+          <p class="vtitle">Generate 100 brandable names in under 5 seconds</p>
+        </div>
+        <span>HD · Live captions</span>
+      </div>
+    </div>
+
+    <div class="stats card reveal">
+      <div><p class="stat-num grad-text" data-count="50000">0</p><p class="stat-lbl">Domains generated</p></div>
+      <div><p class="stat-num grad-text" data-count="20000">0</p><p class="stat-lbl">Businesses helped</p></div>
+      <div><p class="stat-num grad-text" data-count="98" data-suffix="%">0%</p><p class="stat-lbl">Customer satisfaction</p></div>
+      <div><p class="stat-num grad-text" data-count="150">0</p><p class="stat-lbl">Countries</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Loved by founders</p>
+      <h2 class="h2">Names that <span class="serif-italic grad-text">stick</span></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi card reveal">
+        <p class="stars">★★★★★</p>
+        <p class="quote">"We named our entire company with DomainPilot. Went from blank page to secured .com in one afternoon."</p>
+        <div class="testi-person">
+          <span class="avatar" style="background:rgba(139,92,246,0.3);">AR</span>
+          <div><p class="testi-name">Ana Ribeiro</p><p class="testi-role">Founder, Novacraft</p></div>
+        </div>
+      </div>
+      <div class="testi card reveal" style="transition-delay:.08s">
+        <p class="stars">★★★★★</p>
+        <p class="quote">"Way better than the tools I paid $200 for. The brand scoring is genuinely useful — not vibes, real signal."</p>
+        <div class="testi-person">
+          <span class="avatar" style="background:rgba(14,165,233,0.3);">MC</span>
+          <div><p class="testi-name">Marcus Chen</p><p class="testi-role">CEO, Loopstack</p></div>
+        </div>
+      </div>
+      <div class="testi card reveal" style="transition-delay:.16s">
+        <p class="stars">★★★★★</p>
+        <p class="quote">"Feels like Linear made a naming tool. Fast, minimal, and every result is actually usable."</p>
+        <div class="testi-person">
+          <span class="avatar" style="background:rgba(244,114,182,0.3);">PS</span>
+          <div><p class="testi-name">Priya Shah</p><p class="testi-role">Creator, Studio Vela</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Pricing</p>
+      <h2 class="h2">Simple pricing. <span class="serif-italic grad-text">Serious names.</span></h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan card reveal">
+        <p class="plan-tier">Basic</p>
+        <p class="plan-price">$9<span>/mo</span></p>
+        <ul class="plan-feats">
+          <li><span class="check">✓</span>25 AI suggestions / mo</li>
+          <li><span class="check">✓</span>Availability check</li>
+          <li><span class="check">✓</span>24-hour support</li>
+        </ul>
+        <a href="#generator" class="btn btn-ghost">Get started →</a>
+      </div>
+      <div class="plan card popular reveal" style="transition-delay:.08s">
+        <span class="popular-badge">Most popular</span>
+        <p class="plan-tier">Standard</p>
+        <p class="plan-price">$29<span>/mo</span></p>
+        <ul class="plan-feats">
+          <li><span class="check">✓</span>100 suggestions / mo</li>
+          <li><span class="check">✓</span>Brand analysis</li>
+          <li><span class="check">✓</span>Priority support</li>
+          <li><span class="check">✓</span>Search history</li>
+        </ul>
+        <a href="#generator" class="btn btn-grad">Get started →</a>
+      </div>
+      <div class="plan card reveal" style="transition-delay:.16s">
+        <p class="plan-tier">Premium</p>
+        <p class="plan-price">$59<span>/mo</span></p>
+        <ul class="plan-feats">
+          <li><span class="check">✓</span>Unlimited suggestions</li>
+          <li><span class="check">✓</span>Brand strategy</li>
+          <li><span class="check">✓</span>Logo & tagline ideas</li>
+          <li><span class="check">✓</span>Social username check</li>
+          <li><span class="check">✓</span>Priority AI</li>
+        </ul>
+        <a href="#generator" class="btn btn-ghost">Get started →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="h2">Questions, <span class="serif-italic grad-text">answered</span></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item card">
+        <button class="faq-q" aria-expanded="false">
+          How does AI generate the names?
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-a">DomainPilot analyzes your business name, industry, keywords, and brand style, then blends linguistic patterns, phonetics, and naming conventions from your category to produce brandable candidates — not just keyword mashups.</div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" aria-expanded="false">
+          How accurate is the availability check?
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-a">Availability is checked in real time against live registry data at the moment you search, across every extension you select. We recommend registering promising names quickly, since availability can change.</div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" aria-expanded="false">
+          Can I register domains directly?
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-a">Yes — once you find a name you like, DomainPilot hands you off to a trusted registrar partner to complete purchase and setup in a couple of clicks.</div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" aria-expanded="false">
+          How many names do I receive?
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-a">Free searches return a curated preview. Paid plans unlock 25 to unlimited suggestions per month, depending on your tier, each scored for brand strength and pronunciation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="section">
+  <div class="wrap">
+    <div class="section-head reveal" style="max-width:480px;">
+      <p class="eyebrow">Contact</p>
+      <h2 class="h2">Let's <span class="serif-italic grad-text">talk</span></h2>
+      <p class="gen-sub">Enterprise plans, partnerships, or press — drop a note.</p>
+    </div>
+    <form id="contactForm" class="contact-form card reveal">
+      <div class="gen-grid">
+        <div>
+          <label for="cName" class="label">Name</label>
+          <input id="cName" required type="text" class="field" placeholder="Jane Doe" />
+        </div>
+        <div>
+          <label for="cEmail" class="label">Email</label>
+          <input id="cEmail" required type="email" class="field" placeholder="jane@company.com" />
+        </div>
+      </div>
+      <div class="field-block">
+        <label for="cBiz" class="label">Business</label>
+        <input id="cBiz" type="text" class="field" placeholder="Acme Studio" />
+      </div>
+      <div class="field-block">
+        <label for="cMsg" class="label">Message</label>
+        <textarea id="cMsg" rows="4" class="field" placeholder="Tell us what you're building..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-grad btn-full gen-submit">Send message →</button>
+      <p id="contactSuccess" class="contact-success">Thanks — we'll be in touch shortly.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap footer-grid">
+    <div>
+      <a href="#" class="logo">
+        <span class="logo-badge">✧</span>
+        DomainPilot
+      </a>
+      <p class="footer-desc">AI-powered domain discovery for founders, creators, and agencies. Ship your brand faster.</p>
+      <form id="newsletterForm" class="newsletter">
+        <input required type="email" placeholder="you@company.com" class="field" />
+        <button type="submit" class="btn btn-grad">Subscribe</button>
+      </form>
+    </div>
+    <div class="fcol">
+      <p class="fcol-title">Product</p>
+      <ul>
+        <li><a href="#generator">Generator</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <p class="fcol-title">Company</p>
+      <ul>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+      <div class="fsocial">
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="GitHub">GH</a>
+        <a href="#" aria-label="LinkedIn">in</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© <span id="year"></span> DomainPilot. All rights reserved.</span>
+    <span>Crafted for founders who ship.</span>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// mobile menu
+var menuBtn = document.getElementById('menuBtn');
+var mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', function(){
+  var open = mobileMenu.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', String(open));
+});
+mobileMenu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ mobileMenu.classList.remove('open'); }); });
+
+// scroll reveal
+var revealEls = document.querySelectorAll('.reveal');
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.15 });
+revealEls.forEach(function(el){ io.observe(el); });
+
+// counters
+var counters = document.querySelectorAll('[data-count]');
+var countIO = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if (!e.isIntersecting) return;
+    countIO.unobserve(e.target);
+    var el = e.target;
+    var target = parseInt(el.dataset.count, 10);
+    var suffix = el.dataset.suffix || '+';
+    var dur = 1400;
+    var start = performance.now();
+    function tick(now){
+      var p = Math.min(1, (now - start) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      var val = Math.round(target * eased);
+      el.textContent = val.toLocaleString() + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}, { threshold: 0.4 });
+counters.forEach(function(el){ countIO.observe(el); });
+
+// chip toggles
+document.querySelectorAll('#styleGroup .chip').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('#styleGroup .chip').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+  });
+});
+document.querySelectorAll('#extGroup .chip').forEach(function(btn){
+  btn.addEventListener('click', function(){ btn.classList.toggle('active'); });
+});
+
+// faq accordion
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click', function(){
+    var a = q.nextElementSibling;
+    var open = a.classList.contains('open');
+    document.querySelectorAll('.faq-a').forEach(function(el){ el.classList.remove('open'); });
+    document.querySelectorAll('.faq-icon').forEach(function(i){ i.style.transform = 'rotate(0deg)'; });
+    document.querySelectorAll('.faq-q').forEach(function(el){ el.setAttribute('aria-expanded', 'false'); });
+    if (!open) {
+      a.classList.add('open');
+      q.querySelector('.faq-icon').style.transform = 'rotate(180deg)';
+      q.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+/* ---------------------------------------------------------
+   MOCK DOMAIN GENERATOR
+   Replace generateMockDomains() with a real API call — see
+   README.md "Wiring up real AI + availability" section.
+--------------------------------------------------------- */
+var SUFFIXES = ['Spark','Pilot','Mint','Flow','Forge','Nest','Craft','Loop','Base','Wave','Stack','Grove','Peak','Shift'];
+var PREFIXES = ['Nova','Brand','Cloud','Vision','Launch','Nimbus','Bright','North','Terra','Vivid','Pure','Bold'];
+function ext(){ return Array.prototype.slice.call(document.querySelectorAll('#extGroup .chip.active')).map(function(b){ return b.textContent.trim(); }); }
+
+function randScore(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateMockDomains(n){
+  n = n || 5;
+  var exts = ext().length ? ext() : ['.com'];
+  var used = {};
+  var out = [];
+  var guard = 0;
+  while (out.length < n && guard < 200) {
+    guard++;
+    var name = PREFIXES[Math.floor(Math.random()*PREFIXES.length)] + SUFFIXES[Math.floor(Math.random()*SUFFIXES.length)];
+    var extension = exts[Math.floor(Math.random()*exts.length)];
+    var full = name + extension;
+    if (used[full]) continue;
+    used[full] = true;
+    out.push({
+      domain: full,
+      available: Math.random() > 0.28,
+      brand: randScore(72, 98),
+      pronounce: randScore(75, 99),
+      memorable: randScore(70, 97)
+    });
+  }
+  return out;
+}
+
+function domainCard(d){
+  var badge = d.available
+    ? '<span class="badge-ok">✓ Available</span>'
+    : '<span class="badge-no">✕ Taken</span>';
+  return (
+    '<div class="result-card card reveal in">' +
+      '<div class="result-head"><h4>' + d.domain + '</h4>' + badge + '</div>' +
+      '<div class="score-row">' +
+        '<div><p class="score-num grad-text">' + d.brand + '</p><p class="score-lbl">Brand score</p></div>' +
+        '<div><p class="score-num grad-text">' + d.pronounce + '</p><p class="score-lbl">Pronunciation</p></div>' +
+        '<div><p class="score-num grad-text">' + d.memorable + '</p><p class="score-lbl">Memorability</p></div>' +
+      '</div>' +
+      '<div class="result-actions">' +
+        '<button class="btn btn-ghost btn-small copy-btn" data-domain="' + d.domain + '">Copy</button>' +
+        '<button class="btn btn-ghost btn-small">Save</button>' +
+        '<button class="btn btn-ghost btn-small">Favorite ♡</button>' +
+        '<button class="btn btn-ghost btn-small">Share</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+// hero mini demo (runs once, on load)
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    var preset = [
+      {domain:'NovaSpark.com', available:true},
+      {domain:'BrandPilot.com', available:true},
+      {domain:'CloudMint.com', available:false},
+      {domain:'VisionFlow.com', available:true},
+      {domain:'LaunchForge.com', available:true}
+    ];
+    var wrap = document.getElementById('heroResults');
+    document.getElementById('heroGenerating').style.display = 'none';
+    preset.forEach(function(d, i){
+      setTimeout(function(){
+        var row = document.createElement('div');
+        row.className = 'mock-row';
+        row.innerHTML = '<span style="font-weight:600; font-size:14px;">' + d.domain + '</span>' +
+          (d.available ? '<span class="tag-ok">✓ Available</span>' : '<span class="tag-no">✕ Taken</span>');
+        wrap.appendChild(row);
+        requestAnimationFrame(function(){ row.classList.add('in'); });
+      }, i * 260);
+    });
+  }, 900);
+});
+
+// generator form
+var genForm = document.getElementById('genForm');
+var genBtn = document.getElementById('genBtn');
+var resultsWrap = document.getElementById('resultsWrap');
+genForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  genBtn.disabled = true;
+  var originalHTML = genBtn.innerHTML;
+  genBtn.innerHTML = '<svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="9" opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9"/></svg> Generating…';
+  resultsWrap.innerHTML = '';
+  setTimeout(function(){
+    var results = generateMockDomains(6);
+    resultsWrap.innerHTML = '<div class="results-grid">' + results.map(domainCard).join('') + '</div>';
+    genBtn.disabled = false;
+    genBtn.innerHTML = originalHTML;
+    resultsWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 1100);
+});
+
+resultsWrap.addEventListener('click', function(e){
+  var btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  if (navigator.clipboard) navigator.clipboard.writeText(btn.dataset.domain);
+  var old = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(function(){ btn.textContent = old; }, 1200);
+});
+
+// contact + newsletter (no backend yet — see README)
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  document.getElementById('contactSuccess').classList.add('show');
+  e.target.reset();
+});
+document.getElementById('newsletterForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  e.target.querySelector('input').value = '';
+  alert('Subscribed! (wire this up to an email provider — see README)');
+});
+</script>
+</body>
+</html>
